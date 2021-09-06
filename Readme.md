@@ -1,3 +1,6 @@
+[![Go
+Reference](https://pkg.go.dev/badge/github.com/oxplot/starenv.svg)](https://pkg.go.dev/github.com/oxplot/starenv)
+
 **starenv** (`*env`) allows populating environmental variables from
 variety of sources, such as AWS Parameter Store, GPG encrypted files
 and more, with extreme ease.
