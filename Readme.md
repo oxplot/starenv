@@ -9,7 +9,7 @@ package main
 
 import (
 	"fmt"
-  "os"
+	"os"
 
 	_ "github.com/oxplot/starenv/autoload"
 )
