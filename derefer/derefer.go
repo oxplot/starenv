@@ -2,7 +2,7 @@ package derefer
 
 import "github.com/oxplot/starenv"
 
-var NoConfigInit = map[string]func() (starenv.Derefer, error){
+var NewDefault = map[string]func() (starenv.Derefer, error){
 	"b64": func() (starenv.Derefer, error) {
 		return starenv.DereferFunc(Base64), nil
 	},
@@ -26,4 +26,20 @@ var NoConfigInit = map[string]func() (starenv.Derefer, error){
 	"gpg": func() (starenv.Derefer, error) {
 		return starenv.DereferFunc(GPG), nil
 	},
+}
+
+type Lazy struct {
+	New func() (starenv.Derefer, error)
+	d   starenv.Derefer
+}
+
+func (l *Lazy) Deref(ref string) (string, error) {
+	if l.d == nil {
+		var err error
+		l.d, err = l.New()
+		if err != nil {
+			return "", err
+		}
+	}
+	return l.d.Deref(ref)
 }
