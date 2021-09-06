@@ -2,6 +2,8 @@ package derefer
 
 import "github.com/oxplot/starenv"
 
+// NewDefault is a mapping of default tags to derefer creator functions that
+// use sensible default config.
 var NewDefault = map[string]func() (starenv.Derefer, error){
 	"b64": func() (starenv.Derefer, error) {
 		return starenv.DereferFunc(Base64), nil
@@ -31,6 +33,8 @@ var NewDefault = map[string]func() (starenv.Derefer, error){
 	},
 }
 
+// Lazy is Derefer that encapsulates a derefer creator function and delays its
+// call until the first deref call.
 type Lazy struct {
 	New func() (starenv.Derefer, error)
 	d   starenv.Derefer
