@@ -26,6 +26,9 @@ var NewDefault = map[string]func() (starenv.Derefer, error){
 	"gpg": func() (starenv.Derefer, error) {
 		return starenv.DereferFunc(GPG), nil
 	},
+	"keyring": func() (starenv.Derefer, error) {
+		return starenv.DereferFunc(Keyring), nil
+	},
 }
 
 type Lazy struct {
