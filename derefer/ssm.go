@@ -10,8 +10,8 @@ import (
 )
 
 type AWSParameterStore struct {
-	sess    *session.Session
-	Decrypt bool
+	sess      *session.Session
+	Plaintext bool
 }
 
 func NewAWSParameterStoreWithSession(sess *session.Session) *AWSParameterStore {
@@ -39,7 +39,7 @@ func (d *AWSParameterStore) Deref(ref string) (string, error) {
 	svc := ssm.New(d.sess, aws.NewConfig().WithRegion(region))
 	ssmParam, err := svc.GetParameter(&ssm.GetParameterInput{
 		Name:           aws.String(name),
-		WithDecryption: aws.Bool(d.Decrypt),
+		WithDecryption: aws.Bool(!d.Plaintext),
 	})
 	if err != nil {
 		return "", errors.New("cannot load AWS param '" + name + "' in region '" + region + "': " + err.Error())

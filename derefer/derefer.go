@@ -12,12 +12,12 @@ var NewDefault = map[string]func() (starenv.Derefer, error){
 	"ssm": func() (starenv.Derefer, error) {
 		return NewAWSParameterStore()
 	},
-	"essm": func() (starenv.Derefer, error) {
+	"pssm": func() (starenv.Derefer, error) {
 		d, err := NewAWSParameterStore()
 		if err != nil {
 			return nil, err
 		}
-		d.Decrypt = true
+		d.Plaintext = true
 		return d, nil
 	},
 	"file": func() (starenv.Derefer, error) {
