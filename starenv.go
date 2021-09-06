@@ -62,7 +62,7 @@ func (l *Loader) recurseDeref(ref string) (string, error) {
 	if !ok {
 		return "", errors.New("no registered derefer with tag " + tag)
 	}
-	ref, err := l.recurseDeref(ref[:colIdx+1])
+	ref, err := l.recurseDeref(ref[colIdx+1:])
 	if err != nil {
 		return "", err
 	}

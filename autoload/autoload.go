@@ -10,7 +10,7 @@ import (
 	"github.com/oxplot/starenv/derefer"
 )
 
-const failEnv = "STARENV_AUTOLOAD_FAIL"
+const ignoreErrEnv = "STARENV_IGNORE_ERR"
 
 func init() {
 	_ = godotenv.Load()
@@ -19,10 +19,10 @@ func init() {
 		starenv.Register(t, &derefer.Lazy{New: n})
 	}
 
-	fail := len(os.Getenv(failEnv)) > 0
-	os.Unsetenv(failEnv)
+	ignoreErr := len(os.Getenv(ignoreErrEnv)) > 0
+	os.Unsetenv(ignoreErrEnv)
 
-	if err := starenv.Load(); err != nil && fail {
+	if err := starenv.Load(); err != nil && !ignoreErr {
 		log.Fatal("starenv.autoload: ", err)
 	}
 }
