@@ -34,7 +34,7 @@ GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 or from a GPG encrypted file:
 
 ```
-$ export GITHUB_TOKEN=*gpg:*file:github_token.gpg
+$ export GITHUB_TOKEN=*gpg*file:github_token.gpg
 $ go run main.go
 GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 ```
@@ -42,7 +42,7 @@ GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 why not ditch the file and embed the file:
 
 ```
-$ export GITHUB_TOKEN=*gpg:*b64:eNeO7D2rBrBOOcW6TuETyHdyPEOaAfdgaTzgOTSvROI=
+$ export GITHUB_TOKEN=*gpg*b64:eNeO7D2rBrBOOcW6TuETyHdyPEOaAfdgaTzgOTSvROI=
 $ go run main.go
 GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 ```

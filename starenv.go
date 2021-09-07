@@ -17,7 +17,7 @@
   the reference for the last derefer. Here is an example of a environmental
   variable specifying to load its value from a base64 encoded file and decrypt
   it using GPG:
-    GITHUB_TOKEN=*gpg:*b64:*file:~/.github_token
+    GITHUB_TOKEN=*gpg*b64*file:~/.github_token
   Each derefer is applied in reverse, starting with "file" which loads the
   content of "~/.github_token". "b64" then decodes it and finally "gpg"
   decrypts it.
@@ -62,6 +62,10 @@ func (d DereferFunc) Deref(ref string) (string, error) {
 	return d(ref)
 }
 
+func literalDerefer(ref string) (string, error) {
+	return ref, nil
+}
+
 // Loader holds a registry of derefers which are looked up and applied to
 // values of all environmental variables when Load() is called.
 type Loader struct {
@@ -69,15 +73,19 @@ type Loader struct {
 	derefers map[string]Derefer
 }
 
+// NewLoader returns a new loader with empty "" tag mapped to to a passthrough
+// derefer. This is needed to allow for environmental variable values which
+// start with "*":
+//   GLOB_PAT=*:*.terraform
+// The above will resolve to "*.terraform".
 func NewLoader() *Loader {
 	return &Loader{
 		Star:     "*",
-		derefers: map[string]Derefer{},
+		derefers: map[string]Derefer{"": DereferFunc(literalDerefer)},
 	}
 }
 
-// Register maps a tag with a derefer. Empty tag and tags with ":" are
-// unusable.
+// Register maps a tag with a derefer. Tags that include ":" are unusable.
 func (l *Loader) Register(tag string, d Derefer) {
 	l.derefers[tag] = d
 }
@@ -88,7 +96,7 @@ func (l *Loader) Load() error {
 	for _, e := range os.Environ() {
 		s := strings.SplitN(e, "=", 2)
 		k, v := s[0], s[1]
-		v, err := l.recurseDeref(v)
+		v, err := l.load(v)
 		if err != nil {
 			return errors.New("failed to load env var " + k + ": " + err.Error())
 		}
@@ -97,7 +105,7 @@ func (l *Loader) Load() error {
 	return nil
 }
 
-func (l *Loader) recurseDeref(ref string) (string, error) {
+func (l *Loader) load(ref string) (string, error) {
 	if !strings.HasPrefix(ref, l.Star) {
 		return ref, nil
 	}
@@ -106,19 +114,20 @@ func (l *Loader) recurseDeref(ref string) (string, error) {
 	if colIdx == -1 {
 		return "", errors.New("no colon found")
 	}
-	if colIdx == 0 { // literal value
-		return ref[1:], nil
+	tags := strings.Split(ref[:colIdx], l.Star)
+	ref = ref[colIdx+1:]
+	for i := len(tags) - 1; i >= 0; i-- {
+		d, ok := l.derefers[tags[i]]
+		if !ok {
+			return "", errors.New("no registered derefer with tag " + tags[i])
+		}
+		var err error
+		ref, err = d.Deref(ref)
+		if err != nil {
+			return "", err
+		}
 	}
-	tag := ref[:colIdx]
-	d, ok := l.derefers[tag]
-	if !ok {
-		return "", errors.New("no registered derefer with tag " + tag)
-	}
-	ref, err := l.recurseDeref(ref[colIdx+1:])
-	if err != nil {
-		return "", err
-	}
-	return d.Deref(ref)
+	return ref, nil
 }
 
 var (
