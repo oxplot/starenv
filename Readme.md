@@ -55,3 +55,6 @@ $ echo 'GITHUB_TOKEN=*keyring:awesome_app/github_token' > .env
 $ go run main.go
 GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 ```
+
+For a full list, see [the
+docs](https://pkg.go.dev/github.com/oxplot/starenv/derefer#NewDefault).
