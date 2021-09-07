@@ -6,6 +6,8 @@ import (
 	"strings"
 )
 
+// GPG takes encrypted content ref, decrypts it and returns it. It calls on
+// external gpg command to do this.
 func GPG(ref string) (string, error) {
 	c := exec.Command("gpg", "--decrypt")
 	c.Stdin = strings.NewReader(ref)
