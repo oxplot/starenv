@@ -69,6 +69,7 @@ func literalDerefer(ref string) (string, error) {
 // Loader holds a registry of derefers which are looked up and applied to
 // values of all environmental variables when Load() is called.
 type Loader struct {
+	// Star is the prefix and separator of derefer tags which defaults to "*".
 	Star     string
 	derefers map[string]Derefer
 }
