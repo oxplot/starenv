@@ -16,6 +16,8 @@ import (
 // On linux, you can store a secret via GNOME's SecretService using the command line:
 //   secret-tool store --label my_app_secret service my_app username user123
 // You can then pass "my_app/user123" as ref to Keyring() method to retrieve it.
+//
+// Default tag for this derefer is "keyring".
 func Keyring(ref string) (string, error) {
 	s := strings.SplitN(ref, "/", 2)
 	if len(s) != 2 {

@@ -4,33 +4,43 @@ import "github.com/oxplot/starenv"
 
 // NewDefault is a mapping of default tags to derefer creator functions that
 // use sensible default config.
-var NewDefault = map[string]func() (starenv.Derefer, error){
-	"b64": func() (starenv.Derefer, error) {
-		return starenv.DereferFunc(Base64), nil
-	},
-	"hex": func() (starenv.Derefer, error) {
-		return starenv.DereferFunc(Hex), nil
-	},
-	"ssm": func() (starenv.Derefer, error) {
-		return NewAWSParameterStore()
-	},
-	"pssm": func() (starenv.Derefer, error) {
-		d, err := NewAWSParameterStore()
-		if err != nil {
-			return nil, err
-		}
-		d.Plaintext = true
-		return d, nil
-	},
-	"file": func() (starenv.Derefer, error) {
-		return &File{ExpandHome: true}, nil
-	},
-	"gpg": func() (starenv.Derefer, error) {
-		return starenv.DereferFunc(GPG), nil
-	},
-	"keyring": func() (starenv.Derefer, error) {
-		return starenv.DereferFunc(Keyring), nil
-	},
+var NewDefault map[string]func() (starenv.Derefer, error)
+
+func init() {
+	NewDefault = map[string]func() (starenv.Derefer, error){
+		"b64": func() (starenv.Derefer, error) {
+			return starenv.DereferFunc(Base64), nil
+		},
+		"hex": func() (starenv.Derefer, error) {
+			return starenv.DereferFunc(Hex), nil
+		},
+		"ssm": func() (starenv.Derefer, error) {
+			return NewAWSParameterStore()
+		},
+		"pssm": func() (starenv.Derefer, error) {
+			d, err := NewAWSParameterStore()
+			if err != nil {
+				return nil, err
+			}
+			d.Plaintext = true
+			return d, nil
+		},
+		"file": func() (starenv.Derefer, error) {
+			return &File{ExpandHome: true}, nil
+		},
+		"gpg": func() (starenv.Derefer, error) {
+			return starenv.DereferFunc(GPG), nil
+		},
+		"keyring": func() (starenv.Derefer, error) {
+			return starenv.DereferFunc(Keyring), nil
+		},
+		"https": func() (starenv.Derefer, error) {
+			return &Http{}, nil
+		},
+		"http": func() (starenv.Derefer, error) {
+			return &Http{DefaultInsecure: true}, nil
+		},
+	}
 }
 
 // Lazy is Derefer that encapsulates a derefer creator function and delays its

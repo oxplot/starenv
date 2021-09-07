@@ -9,8 +9,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/ssm"
 )
 
+// AWSParameterStore derefs a Parameter Store ARN to its value.
+// Default tag for this derefer is "ssm". "pssm" tag is set to Plaintext mode
+// of this derefer.
 type AWSParameterStore struct {
-	sess      *session.Session
+	sess *session.Session
+	// By default, the value is decrypted. Set this to true to retrieve
+	// non-encrypted values.
 	Plaintext bool
 }
 
@@ -30,6 +35,9 @@ func NewAWSParameterStore() (*AWSParameterStore, error) {
 
 var awsParamStoreARN = regexp.MustCompile("^arn:aws:ssm:([^:]+):[^:]*:parameter(/.+)$")
 
+// Deref returns the value of the parameter ref which is the ARN of the
+// resource in the form:
+//   arn:aws:ssm:<region>:<account-number>:parameter/...
 func (d *AWSParameterStore) Deref(ref string) (string, error) {
 	m := awsParamStoreARN.FindStringSubmatch(ref)
 	if m == nil {

@@ -5,7 +5,8 @@ import (
 	"encoding/hex"
 )
 
-// Base64 decodes base64 encoded ref and returns it.
+// Base64 decodes base64 encoded ref and returns it. Default tag for this
+// derefer is "b64".
 func Base64(ref string) (string, error) {
 	b, err := base64.StdEncoding.DecodeString(ref)
 	if err != nil {
@@ -14,7 +15,8 @@ func Base64(ref string) (string, error) {
 	return string(b), nil
 }
 
-// Hex decodes hex encoded ref and returns it.
+// Hex decodes hex encoded ref and returns it. Default tag for this derefer is
+// "hex".
 func Hex(ref string) (string, error) {
 	b, err := hex.DecodeString(ref)
 	if err != nil {

@@ -8,7 +8,8 @@ import (
 	"strings"
 )
 
-// File derefs a file path to the content of the file.
+// File derefs a file path to the content of the file. Default tag for this
+// derefer is "file".
 type File struct {
 	// ExpandHome when set to true will replace "~/" with the current user's home
 	// directory just like a standard POSIX shell would do.
