@@ -39,7 +39,7 @@ $ go run main.go
 GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 ```
 
-why not ditch the file and embed the file:
+why not ditch the file and embed its content:
 
 ```
 $ export GITHUB_TOKEN=*gpg*b64:eNeO7D2rBrBOOcW6TuETyHdyPEOaAfdgaTzgOTSvROI=
