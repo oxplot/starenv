@@ -10,6 +10,9 @@ import "github.com/oxplot/starenv"
 // When using autoload package, these derefers are automatically loaded with
 // default tags.
 var NewDefault = map[string]func() (starenv.Derefer, error){
+	"env": func() (starenv.Derefer, error) {
+		return starenv.DereferFunc(Env), nil
+	},
 	"b64": func() (starenv.Derefer, error) {
 		return starenv.DereferFunc(Base64), nil
 	},
