@@ -33,17 +33,20 @@ func NewAWSParameterStore() (*AWSParameterStore, error) {
 	return NewAWSParameterStoreWithSession(sess), nil
 }
 
-var awsParamStoreARN = regexp.MustCompile("^arn:aws:ssm:([^:]+):[^:]*:parameter(/.+)$")
+var awsParamStoreARN = regexp.MustCompile("^(?:arn:aws:ssm:([^:]+):[^:]*:parameter)?(/.+)$")
 
 // Deref returns the value of the parameter ref which is the ARN of the
-// resource in the form:
-//   arn:aws:ssm:<region>:<account-number>:parameter/...
+// resource in the form (where [..] is optional):
+//   [arn:aws:ssm:<region>:<account-number>:parameter]/...
 func (d *AWSParameterStore) Deref(ref string) (string, error) {
 	m := awsParamStoreARN.FindStringSubmatch(ref)
 	if m == nil {
 		return "", errors.New("invalid AWS param store key " + ref)
 	}
 	region, name := m[1], m[2]
+	if region == "" {
+		region = *d.sess.Config.Region
+	}
 	svc := ssm.New(d.sess, aws.NewConfig().WithRegion(region))
 	ssmParam, err := svc.GetParameter(&ssm.GetParameterInput{
 		Name:           aws.String(name),
