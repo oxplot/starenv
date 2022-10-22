@@ -1,5 +1,5 @@
 /*
-  derefer package implements a set of basic derefers
+derefer package implements a set of basic derefers
 */
 package derefer
 
@@ -29,6 +29,9 @@ var NewDefault = map[string]func() (starenv.Derefer, error){
 		}
 		d.Plaintext = true
 		return d, nil
+	},
+	"s3": func() (starenv.Derefer, error) {
+		return NewS3()
 	},
 	"file": func() (starenv.Derefer, error) {
 		return &File{ExpandHome: true}, nil
