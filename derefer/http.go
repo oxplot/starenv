@@ -7,9 +7,9 @@ import (
 	"net/url"
 )
 
-// Http derefs a URL to its content. Default tag for this derefer is "https".
+// HTTP derefs a URL to its content. Default tag for this derefer is "https".
 // Tag "http" exists for the insecure config.
-type Http struct {
+type HTTP struct {
 	// By default, if no scheme is provided, https is assumed. Setting this to
 	// true will instead assume http.
 	DefaultInsecure bool
@@ -17,10 +17,13 @@ type Http struct {
 
 // Deref treats ref as a URL and returns the response body of a GET request.
 // You can leave off the scheme and take advantange of the default tag for this derefer:
-//   *https://example.com
+//
+//	*https://example.com
+//
 // instead of:
-//   *https:https://example.com
-func (h *Http) Deref(ref string) (string, error) {
+//
+//	*https:https://example.com
+func (h *HTTP) Deref(ref string) (string, error) {
 	u, err := url.Parse(ref)
 	if err != nil {
 		return "", errors.New("cannot parse " + ref + " as url")

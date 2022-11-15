@@ -23,6 +23,8 @@ type AWSParameterStore struct {
 	Plaintext bool
 }
 
+// NewAWSParameterStore creates a new AWSParameterStore derefer with default
+// configuration.
 func NewAWSParameterStore() (*AWSParameterStore, error) {
 	c, err := awsconfig.LoadDefaultConfig(context.Background())
 	if err != nil {
@@ -31,6 +33,8 @@ func NewAWSParameterStore() (*AWSParameterStore, error) {
 	return NewAWSParameterStoreWithConfig(c), nil
 }
 
+// NewAWSParameterStoreWithConfig creates a new AWSParameterStore derefer with
+// the given configuration.
 func NewAWSParameterStoreWithConfig(c aws.Config) *AWSParameterStore {
 	return &AWSParameterStore{cfg: c}
 }
@@ -69,6 +73,7 @@ type S3 struct {
 	cfg aws.Config
 }
 
+// NewS3 creates a new S3 derefer with default configuration.
 func NewS3() (*S3, error) {
 	c, err := awsconfig.LoadDefaultConfig(context.Background())
 	if err != nil {
@@ -77,6 +82,7 @@ func NewS3() (*S3, error) {
 	return NewS3WithConfig(c), nil
 }
 
+// NewS3WithConfig creates a new S3 derefer with the given configuration.
 func NewS3WithConfig(c aws.Config) *S3 {
 	return &S3{cfg: c}
 }

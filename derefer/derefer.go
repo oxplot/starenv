@@ -1,6 +1,4 @@
-/*
-derefer package implements a set of basic derefers
-*/
+// Package derefer package implements a set of basic derefers
 package derefer
 
 import "github.com/oxplot/starenv"
@@ -43,10 +41,13 @@ var NewDefault = map[string]func() (starenv.Derefer, error){
 		return starenv.DereferFunc(Keyring), nil
 	},
 	"https": func() (starenv.Derefer, error) {
-		return &Http{}, nil
+		return &HTTP{}, nil
 	},
 	"http": func() (starenv.Derefer, error) {
-		return &Http{DefaultInsecure: true}, nil
+		return &HTTP{DefaultInsecure: true}, nil
+	},
+	"tmpfile": func() (starenv.Derefer, error) {
+		return starenv.DereferFunc(TempFile), nil
 	},
 }
 
@@ -57,6 +58,7 @@ type Lazy struct {
 	d   starenv.Derefer
 }
 
+// Deref calls the underlying derefer's Deref method.
 func (l *Lazy) Deref(ref string) (string, error) {
 	if l.d == nil {
 		var err error
