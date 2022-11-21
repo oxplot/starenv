@@ -37,6 +37,7 @@ func (f *File) Deref(ref string) (string, error) {
 // having their content in the env var. Under most OSes, temp directory content
 // is held in memory and isn't written to disk, this ensures a further layer of
 // security for secrets.
+// Note that the file is NOT deleted automatically.
 func TempFile(v string) (string, error) {
 	f, err := ioutil.TempFile("", "starenv-*")
 	if err != nil {
