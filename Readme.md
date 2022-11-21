@@ -26,7 +26,7 @@ and set the value of the environmental variable to load from Parameter
 Store:
 
 ```
-$ export GITHUB_TOKEN=*ssm:arn:aws:ssm:us-west-2:123456123456:parameter/github_token
+$ export GITHUB_TOKEN=*ssm:/github_token
 $ go run main.go
 GITHUB_TOKEN=abcdef-1235143-abcdef-123-abcdef-12314
 ```
