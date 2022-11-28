@@ -52,7 +52,7 @@ func (d *AWSParameterStore) Deref(ref string) (string, error) {
 	}
 	region, name := m[1], m[2]
 	cfg := d.cfg
-	if region == "" {
+	if region != "" {
 		cfg = cfg.Copy()
 		cfg.Region = region
 	}
