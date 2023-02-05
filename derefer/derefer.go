@@ -49,6 +49,15 @@ var NewDefault = map[string]func() (starenv.Derefer, error){
 	"tmpfile": func() (starenv.Derefer, error) {
 		return starenv.DereferFunc(TempFile), nil
 	},
+	"gz": func() (starenv.Derefer, error) {
+		return starenv.DereferFunc(Gzip), nil
+	},
+	"bz2": func() (starenv.Derefer, error) {
+		return starenv.DereferFunc(Bzip2), nil
+	},
+	"flate": func() (starenv.Derefer, error) {
+		return starenv.DereferFunc(Flate), nil
+	},
 }
 
 // Lazy is a derefer that encapsulates a derefer creator function and delays
