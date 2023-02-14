@@ -11,9 +11,7 @@ import (
 
 func init() {
 	if os.Getenv("DOTENV_ENABLED") != "0" {
-		if err := godotenv.Load(); err != nil {
-			log.Printf("starenv.autoload: %s", err)
-		}
+		_ = godotenv.Load()
 	}
 
 	if errs := starenv.DefaultLoader.Load(); errs != nil {
