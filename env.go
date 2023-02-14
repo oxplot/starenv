@@ -1,4 +1,4 @@
-package derefer
+package starenv
 
 import (
 	"os"

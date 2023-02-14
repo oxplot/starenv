@@ -1,10 +1,10 @@
 package starenv
 
-// NewDefault is a mapping of default tags to derefer creator functions that
+// DefaultDerefers is a mapping of default tags to derefer creator functions that
 // use sensible default config.
 // When using autoload package, these derefers are automatically loaded with
 // default tags.
-var NewDefault = map[string]func() (Derefer, error){
+var DefaultDerefers = map[string]func() (Derefer, error){
 	"env": func() (Derefer, error) {
 		return DereferFunc(Env), nil
 	},
