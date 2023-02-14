@@ -49,30 +49,10 @@ package starenv
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 )
-
-// Derefer is an interface that wraps Deref method.
-//
-// Deref method is called with the recursively derefed value of all subsequent
-// derefers in the pipeline. ref is therefore a literal by the time it's passed
-// to this method.
-type Derefer interface {
-	Deref(ref string) (value string, err error)
-}
-
-// DereferFunc type is an adapter to allow use of ordinary functions as derefers.
-type DereferFunc func(ref string) (string, error)
-
-// Deref calls f(ref).
-func (d DereferFunc) Deref(ref string) (string, error) {
-	return d(ref)
-}
-
-func literalDerefer(ref string) (string, error) {
-	return ref, nil
-}
 
 // Loader holds a registry of derefers which are looked up and applied to
 // values of all environmental variables when Load() is called.
@@ -103,21 +83,26 @@ func (l *Loader) Register(tag string, d Derefer) {
 
 // Load iterates through all environmental variables and recursively derefs
 // their values appropriately. If STARENV_ENABLED env var is set to 0, it does
-// nothing.
-func (l *Loader) Load() error {
+// nothing. Error in loading one variable does not stop the process. All errors
+// are collected and returned as a slice. The errored out variables are set to
+// empty string.
+func (l *Loader) Load() []error {
 	if os.Getenv("STARENV_ENABLED") == "0" {
 		return nil
 	}
+	errs := []error{}
 	for _, e := range os.Environ() {
 		s := strings.SplitN(e, "=", 2)
 		k, v := s[0], s[1]
 		v, err := l.load(v)
 		if err != nil {
-			return errors.New("failed to load env var " + k + ": " + err.Error())
+			errs = append(errs, fmt.Errorf("failed to load env var %s: %w", k, err))
+			os.Setenv(k, "")
+			continue
 		}
 		os.Setenv(k, v)
 	}
-	return nil
+	return errs
 }
 
 func (l *Loader) load(ref string) (string, error) {
@@ -146,17 +131,13 @@ func (l *Loader) load(ref string) (string, error) {
 }
 
 var (
-	defaultLoader = NewLoader()
+	// DefaultLoader is the default loader which has all the DefaultDerefers
+	// registered with it.
+	DefaultLoader = NewLoader()
 )
 
-// Register maps a tag with a derefer on the default loader.
-func Register(tag string, d Derefer) {
-	defaultLoader.Register(tag, d)
-}
-
-// Load iterates through all environmental variables and recursively derefs
-// their values appropriately. Derefers must fist be registered with Register()
-// function.
-func Load() error {
-	return defaultLoader.Load()
+func init() {
+	for t, n := range DefaultDerefers {
+		DefaultLoader.Register(t, &LazyDerefer{New: n})
+	}
 }
